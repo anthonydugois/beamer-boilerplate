@@ -1,0 +1,48 @@
+\RequirePackage{tikz}
+
+\usetikzlibrary{calc}
+
+\tikzset{
+	xline/.style={
+		arrow
+	},
+	xlabel/.style={
+		default,
+		outer xsep=2pt
+	},
+	xtick/.style={
+		draw=slate950
+	},
+	xticklabel/.style={
+		default,
+		outer ysep=4pt
+	},
+	pics/xaxis/.style args={from #1 to #2 with #3/#4}{
+		code={
+			\draw[xline] #1 -- #2 node[xlabel,anchor=west] (-time) {\(\mathit{time}\)};
+			\foreach \x [evaluate=\x as \xlabel using int(\x)] in {#3} {
+				\draw[xtick] ($#1+(\x*#4,0)$) -- ++(0,-0.1)
+				node[xticklabel,anchor=north] {\(\xlabel\)};
+			}
+		}
+	},
+	pics/xaxiswithlabs/.style args={from #1 to #2 with #3/#4}{
+		code={
+			\draw[xline] #1 -- #2 node[xlabel,anchor=west] (-time) {\(\mathit{time}\)};
+			\foreach \x/\xlabel [evaluate=\x as \xval using int(\x)] in {#3} {
+				\draw[xtick] ($#1+(\xval*#4,0)$) -- ++(0,-0.1)
+				node[xticklabel,anchor=north] {\(\xlabel\)};
+			}
+		}
+	},
+	pics/job/.style args={#1 at #2,#3 with #4/#5/#6}{
+		code={
+			\node[
+				anchor=south west,
+				minimum width=#4*#5,
+				minimum height=#6,
+				pic actions
+			] (-node) at ($(#2*#5,#3*#6)$) {#1};
+		}
+	}
+}

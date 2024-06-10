@@ -1,0 +1,296 @@
+\mode<presentation>
+
+\RequirePackage{include/colors}
+\RequirePackage{include/tikz-common}
+\RequirePackage{include/tikz-scheduling}
+
+\RequirePackage{ifthen}
+\RequirePackage{helvet}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage{algorithm}
+\RequirePackage[noend]{algpseudocode}
+\RequirePackage{pgfplots}
+\RequirePackage[absolute,overlay]{textpos}
+\RequirePackage{hyperref}
+
+\pgfplotsset{compat=newest}
+
+\usetikzlibrary{positioning}
+
+%%% Save infos in memory for the second pass.
+\tikzstyle{every picture}+=[remember picture]
+
+%%% Main infos.
+\providecommand{\insertshorttitle}{}
+\providecommand{\inserttitle}{}
+\providecommand{\insertsuptitle}{}
+\providecommand{\insertsubtitle}{}
+\providecommand{\insertshortauthor}{}
+\providecommand{\insertauthor}{}
+\providecommand{\insertshortdate}{}
+\providecommand{\insertdate}{}
+\providecommand{\insertshortaffiliation}{}
+\providecommand{\insertaffiliation}{}
+\providecommand{\insertmisc}{}
+\providecommand{\insertimages}{}
+
+\renewcommand{\title}[2][]{
+	\renewcommand{\insertshorttitle}{#1}
+	\renewcommand{\inserttitle}{#2}
+}
+
+\newcommand{\suptitle}[1]{
+	\renewcommand{\insertsuptitle}{#1}
+}
+
+\renewcommand{\subtitle}[1]{
+	\renewcommand{\insertsubtitle}{#1}
+}
+
+\renewcommand{\author}[2][]{
+	\renewcommand{\insertshortauthor}{#1}
+	\renewcommand{\insertauthor}{#2}
+}
+
+\renewcommand{\date}[2][]{
+	\renewcommand{\insertshortdate}{#1}
+	\renewcommand{\insertdate}{#2}
+}
+
+\newcommand{\affiliation}[2][]{
+	\renewcommand{\insertshortaffiliation}{#1}
+	\renewcommand{\insertaffiliation}{#2}
+}
+
+\newcommand{\misc}[1]{
+	\renewcommand{\insertmisc}{#1}
+}
+
+\newcommand{\images}[1]{
+	\renewcommand{\insertimages}{#1}
+}
+
+%%% Remove bottom navigation symbols.
+\setbeamertemplate{navigation symbols}{}
+
+%%% Background.
+\setbeamertemplate{background}{
+	\begin{tikzpicture}
+		\fill[white] (0,0) rectangle (\paperwidth,\paperheight);
+	\end{tikzpicture}
+}
+
+%%% Footline colors.
+\setbeamercolor{theme/foot}{}
+\setbeamercolor{theme/foot author}{fg=blue900}
+\setbeamercolor{theme/foot title}{fg=slate950}
+\setbeamercolor{theme/foot number}{fg=blue900}
+
+%%% Footline fonts.
+\setbeamerfont{theme/foot}{family=\sffamily,size=\tiny,series=\mdseries}
+\setbeamerfont{theme/foot author}{}
+\setbeamerfont{theme/foot title}{}
+\setbeamerfont{theme/foot number}{series=\bfseries}
+
+%%% Footline definition.
+\setbeamertemplate{footline}{%
+	\ifnum\c@framenumber=1\else % do not show footline on first page
+		\begin{beamercolorbox}[sep=1ex,leftskip=1ex,rightskip=1ex]{theme/foot}
+			\usebeamerfont{theme/foot}%
+			\usebeamercolor[fg]{theme/foot author}%
+			\usebeamerfont{theme/foot author}%
+			\insertshortauthor~(\insertshortaffiliation).~%
+			\usebeamercolor[fg]{theme/foot title}%
+			\usebeamerfont{theme/foot title}%
+			\insertshorttitle.~\insertshortdate.%
+			\hfill%
+			\usebeamercolor[fg]{theme/foot number}%
+			\usebeamerfont{theme/foot number}%
+			\insertframenumber%
+		\end{beamercolorbox}
+	\fi
+}
+
+%%% Title page colors.
+\setbeamercolor{theme/title}{fg=blue950}
+\setbeamercolor{theme/suptitle}{fg=blue800}
+\setbeamercolor{theme/subtitle}{fg=blue900}
+\setbeamercolor{theme/author}{fg=blue950}
+\setbeamercolor{theme/affiliation}{}
+\setbeamercolor{theme/misc}{fg=pink600}
+\setbeamercolor{theme/date}{fg=pink600}
+
+%%% Title page fonts.
+\setbeamerfont{theme/title}{family=\sffamily,size=\LARGE,series=\bfseries}
+\setbeamerfont{theme/suptitle}{family=\sffamily,size=\normalsize,series=\mdseries}
+\setbeamerfont{theme/subtitle}{family=\sffamily,size=\normalsize,series=\mdseries}
+\setbeamerfont{theme/author}{family=\sffamily,size=\large,series=\bfseries}
+\setbeamerfont{theme/affiliation}{family=\sffamily,size=\footnotesize,series=\mdseries}
+\setbeamerfont{theme/misc}{family=\sffamily,size=\scriptsize,series=\mdseries}
+\setbeamerfont{theme/date}{family=\sffamily,size=\scriptsize,series=\mdseries}
+
+%%% Title page definition.
+\setbeamertemplate{title page}{
+	\begin{tikzpicture}[
+		overlay,
+		normal/.style={
+			anchor=south west,
+			inner sep=0
+		}
+	]
+		\pgfdeclarelayer{bg};
+		\pgfsetlayers{bg,main};
+
+		\def\xs{20pt};
+		\def\ys{16pt};
+
+		\coordinate (bottom) at ([xshift=\xs,yshift=\ys)]current page.south west);
+		\coordinate (top) at ([xshift=\xs,yshift=-\ys)]current page.north west);
+
+		\node[normal] (date) at (bottom) {
+			\begin{beamercolorbox}{theme/date}
+				\centering%
+				\usebeamerfont{theme/date}%
+				\insertdate%
+			\end{beamercolorbox}
+		};
+
+		\node[normal,above=5pt of date] (misc) {
+			\begin{beamercolorbox}{theme/misc}
+				\centering%
+				\usebeamerfont{theme/misc}%
+				\insertmisc%
+			\end{beamercolorbox}
+		};
+
+		\node[normal,above=24pt of misc] (author) {
+			\begin{beamercolorbox}{theme/author}
+				\centering%
+				\usebeamerfont{theme/author}%
+				\insertauthor\par\smallskip%
+				\usebeamerfont{theme/affiliation}%
+				\insertaffiliation%
+			\end{beamercolorbox}
+		};
+
+		\node[normal,above=42pt of author] (title) {
+			\begin{beamercolorbox}{theme/title}
+				\centering%
+				\usebeamerfont{theme/title}%
+				\inserttitle%
+			\end{beamercolorbox}
+		};
+
+		\node[normal,above=12pt of title] (suptitle) {
+			\begin{beamercolorbox}{theme/suptitle}
+				\centering%
+				\usebeamerfont{theme/suptitle}%
+				\insertsuptitle%
+			\end{beamercolorbox}
+		};
+
+		\node[normal,below=12pt of title] (subtitle) {
+			\begin{beamercolorbox}{theme/subtitle}
+				\centering%
+				\usebeamerfont{theme/subtitle}%
+				\insertsubtitle%
+			\end{beamercolorbox}
+		};
+
+		\node[anchor=north west,inner sep=0] (images) at (top) {
+			\begin{beamercolorbox}{theme/images}
+				\centering%
+				\insertimages%
+			\end{beamercolorbox}
+		};
+	\end{tikzpicture}
+}
+
+%%% TOC colors.
+\setbeamercolor{section in toc}{fg=blue800}
+\setbeamercolor{subsection in toc}{fg=pink600}
+
+%%% TOC fonts.
+\setbeamerfont{section in toc}{family=\sffamily,size=\normalsize,series=\mdseries}
+\setbeamerfont{subsection in toc}{family=\sffamily,size=\footnotesize,series=\mdseries}
+
+%%% Frame title colors.
+\setbeamercolor{frametitle}{bg=white,fg=blue950}
+\setbeamercolor{framesubtitle}{fg=blue900}
+
+%%% Frame title fonts.
+\setbeamerfont{frametitle}{family=\sffamily,size=\normalsize,series=\bfseries}
+\setbeamerfont{framesubtitle}{family=\sffamily,size=\scriptsize,series=\mdseries}
+
+%%% List item colors.
+\setbeamercolor{itemize item}{fg=slate950}
+\setbeamercolor{itemize subitem}{fg=slate950}
+\setbeamercolor{itemize subsubitem}{fg=slate950}
+
+\setbeamercolor{enumerate item}{fg=slate950}
+\setbeamercolor{enumerate subitem}{fg=slate950}
+\setbeamercolor{enumerate subsubitem}{fg=slate950}
+
+%%% List item bullet.
+\setbeamertemplate{itemize item}{\large\(\bullet\)}
+\setbeamertemplate{itemize subitem}{\large\(\bullet\)}
+\setbeamertemplate{itemize subsubitem}{\large\(\bullet\)}
+
+%%% Block fonts.
+\setbeamerfont{block title}{family=\sffamily,size=\normalsize,series=\bfseries}
+\setbeamerfont{block body}{family=\sffamily,size=\normalsize,series=\mdseries}
+
+%%% Define new colored blocks.
+\newcommand{\defineblock}[5]{%
+	\newenvironment{#1}[1]{%
+		\setbeamercolor{block title}{bg=#2,fg=#3}%
+		\setbeamercolor{block body}{bg=#4,fg=#5}%
+		\setbeamercolor{itemize item}{fg=#5}%
+		\setbeamercolor{itemize subitem}{fg=#5}%
+		\setbeamercolor{itemize subsubitem}{fg=#5}%
+		\setbeamercolor{enumerate item}{fg=#5}%
+		\setbeamercolor{enumerate subitem}{fg=#5}%
+		\setbeamercolor{enumerate subsubitem}{fg=#5}%
+		\begin{block}{##1}}{%
+		\end{block}}}
+
+\defineblock{grayblock}{slate600}{white}{slate100}{slate950}
+\defineblock{blueblock}{blue600}{white}{blue100}{blue950}
+\defineblock{redblock}{red600}{white}{red100}{red950}
+\defineblock{greenblock}{teal600}{white}{teal100}{teal950}
+\defineblock{purpleblock}{indigo600}{white}{indigo100}{indigo950}
+\defineblock{yellowblock}{amber600}{white}{amber100}{amber950}
+
+%%% Custom text styling.
+\newcommand{\definetextcolor}[5]{%
+	\newcommand{#1}[2][text]{%
+		\ifthenelse{\equal{##1}{both}}{%
+			\colorbox{#2}{\textcolor{#3}{##2}}}{%
+			\ifthenelse{\equal{##1}{bg}}{%
+				\colorbox{#4}{##2}}{%
+				\textcolor{#5}{##2}}}}}
+
+\definetextcolor{\textwhite}{white}{slate950}{white}{slate950}
+\definetextcolor{\textgray}{white}{slate400}{white}{slate400}
+\definetextcolor{\textblue}{blue200}{blue950}{blue200}{blue700}
+\definetextcolor{\textred}{red200}{red950}{red200}{red700}
+\definetextcolor{\textgreen}{green200}{green950}{green200}{green700}
+\definetextcolor{\textpurple}{indigo200}{indigo950}{indigo200}{indigo700}
+\definetextcolor{\textyellow}{amber200}{amber950}{amber200}{amber700}
+\definetextcolor{\textpale}{amber50}{amber950}{amber50}{amber700}
+\definetextcolor{\textorange}{orange200}{orange950}{orange200}{orange700}
+
+%%% Various helpers.
+\newcommand{\TopRight}[1]{%
+	\tikz[overlay]{%
+		\node[
+			anchor=north east,
+			inner xsep=12pt,
+			inner ysep=10pt,
+			text width=\textwidth,
+			align=right,
+			font=\footnotesize
+		] at (current page.north east) {#1}}}
+
+\mode<all>

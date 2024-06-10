@@ -1,0 +1,28 @@
+\RequirePackage{tikz}
+
+\usetikzlibrary{arrows.meta}
+
+\tikzset{
+	%%% Default node style.
+	default/.style={
+		inner sep=0,
+		outer sep=0,
+		font=\footnotesize,
+		text=slate950
+	},
+	%%% Simple arrow (->).
+	arrow/.style={
+		draw=slate950,
+		-{Stealth[inset=0pt,length=3pt]}
+	},
+	%%% Reversed arrow (<-).
+	rarrow/.style={
+		draw=slate950,
+		{Stealth[inset=0pt,length=3pt]}-
+	},
+	%%% Double arrow (<->).
+	dblarrow/.style={
+		draw=slate950,
+		{Stealth[inset=0pt,length=3pt]}-{Stealth[inset=0pt,length=3pt]}
+	}
+}
